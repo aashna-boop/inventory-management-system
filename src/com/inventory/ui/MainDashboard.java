@@ -1,32 +1,30 @@
-
 package com.inventory.ui;
+
 import javax.swing.*;
+import java.awt.Color;
 
-//creating class
 public class MainDashboard extends JFrame {
-    //constructur
-    public MainDashboard(){
-        //window settings
-        setTitle("Inventory Management System");
-        setSize(800,500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); //centre the window
 
-        //tabbed pane
+    public MainDashboard() {
+
+        setTitle("Inventory Management System");
+        setSize(900, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
         JTabbedPane tabs = new JTabbedPane();
 
-        //add tabs empty for now
-        tabs.add("Products", new JPanel());
+        // Product tab (REAL PANEL)
+        tabs.add("Products", new ProductPanel());
+
+        // Placeholder tabs
         tabs.add("Stock", new JPanel());
         tabs.add("Suppliers", new JPanel());
         tabs.add("Invoice", new JPanel());
         tabs.add("Reports", new JPanel());
 
-        //add tabs to frame
         add(tabs);
 
-        //make visible
         setVisible(true);
     }
-    
 }
