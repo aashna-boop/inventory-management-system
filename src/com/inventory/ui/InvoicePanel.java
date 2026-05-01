@@ -1,6 +1,8 @@
 package com.inventory.ui;
 
 import com.inventory.db.DBConnection;
+import com.inventory.model.Invoice;
+import com.inventory.model.InvoiceItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,12 @@ public class InvoicePanel extends JPanel {
     DefaultTableModel model;
     JTable table;
 
+    double grandTotal = 0;
+    JLabel totalLabel = new JLabel("Total: 0");
+
+    // MODEL OBJECT
+    Invoice invoice = new Invoice();
+
     public InvoicePanel() {
 
         setLayout(new BorderLayout());
@@ -27,7 +35,7 @@ public class InvoicePanel extends JPanel {
         add(title, BorderLayout.NORTH);
 
         // ================= FORM =================
-        JPanel form = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel form = new JPanel(new GridLayout(4, 2, 10, 10));
         form.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
         form.add(new JLabel("Product ID:"));
@@ -39,11 +47,12 @@ public class InvoicePanel extends JPanel {
         JButton addBtn = new JButton("Add to Invoice");
         form.add(addBtn);
 
-        add(form, BorderLayout.CENTER);
+        form.add(totalLabel);
+
+        add(form, BorderLayout.NORTH);
 
         // ================= TABLE =================
         model = new DefaultTableModel();
-
         model.addColumn("Product ID");
         model.addColumn("Quantity");
         model.addColumn("Price");
@@ -51,10 +60,9 @@ public class InvoicePanel extends JPanel {
 
         table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
 
-        add(scrollPane, BorderLayout.SOUTH);
-
-        // ================= BUTTON ACTION =================
+        // ================= ADD ITEM =================
         addBtn.addActionListener(e -> {
 
             try {
@@ -72,16 +80,26 @@ public class InvoicePanel extends JPanel {
                 if (rs.next()) {
 
                     double price = rs.getDouble("price");
-                    double total = price * qty;
 
+                    // CREATE MODEL OBJECT
+                    InvoiceItem item = new InvoiceItem(pid, qty, price);
+
+                    // ADD TO INVOICE OBJECT
+                    invoice.addItem(item);
+
+                    // ADD TO TABLE (UI)
                     model.addRow(new Object[]{
-                            pid,
-                            qty,
-                            price,
-                            total
+                            item.getProductId(),
+                            item.getQuantity(),
+                            item.getPrice(),
+                            item.getTotal()
                     });
 
-                    // clear input fields
+                    // UPDATE TOTAL
+                    grandTotal += item.getTotal();
+                    totalLabel.setText("Total: " + grandTotal);
+
+                    // CLEAR INPUTS
                     productIdField.setText("");
                     quantityField.setText("");
 
@@ -91,7 +109,7 @@ public class InvoicePanel extends JPanel {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error generating invoice!");
+                JOptionPane.showMessageDialog(this, "Error adding item!");
             }
         });
     }
