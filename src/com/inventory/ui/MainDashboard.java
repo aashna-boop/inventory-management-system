@@ -7,6 +7,7 @@ import java.awt.Color;
 public class MainDashboard extends JFrame {
 
     public MainDashboard() {
+        System.out.println("MAIN DASHBOARD LOADED");
 
         setTitle("Inventory Management System");
         setSize(900, 600);

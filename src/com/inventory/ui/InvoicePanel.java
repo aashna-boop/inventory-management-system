@@ -22,19 +22,16 @@ public class InvoicePanel extends JPanel {
     double grandTotal = 0;
     JLabel totalLabel = new JLabel("Total: 0");
 
-    // MODEL OBJECT
     Invoice invoice = new Invoice();
 
     public InvoicePanel() {
 
         setLayout(new BorderLayout());
 
-        // ================= TITLE =================
         JLabel title = new JLabel("INVOICE SYSTEM", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 20));
         add(title, BorderLayout.NORTH);
 
-        // ================= FORM =================
         JPanel form = new JPanel(new GridLayout(4, 2, 10, 10));
         form.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
@@ -51,7 +48,7 @@ public class InvoicePanel extends JPanel {
 
         add(form, BorderLayout.NORTH);
 
-        // ================= TABLE =================
+        // TABLE
         model = new DefaultTableModel();
         model.addColumn("Product ID");
         model.addColumn("Quantity");
@@ -62,55 +59,72 @@ public class InvoicePanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        // ================= ADD ITEM =================
+        // ================= THREADING IMPLEMENTATION =================
         addBtn.addActionListener(e -> {
 
-            try {
-                Connection conn = DBConnection.getConnection();
+            new SwingWorker<Void, Void>() {
 
-                int pid = Integer.parseInt(productIdField.getText());
-                int qty = Integer.parseInt(quantityField.getText());
+                @Override
+                protected Void doInBackground() {
 
-                String sql = "SELECT price FROM products WHERE id = ?";
-                PreparedStatement pst = conn.prepareStatement(sql);
-                pst.setInt(1, pid);
+                    try {
+                        Connection conn = DBConnection.getConnection();
 
-                ResultSet rs = pst.executeQuery();
+                        int pid = Integer.parseInt(productIdField.getText());
+                        int qty = Integer.parseInt(quantityField.getText());
 
-                if (rs.next()) {
+                        String sql = "SELECT price FROM products WHERE id = ?";
+                        PreparedStatement pst = conn.prepareStatement(sql);
+                        pst.setInt(1, pid);
 
-                    double price = rs.getDouble("price");
+                        ResultSet rs = pst.executeQuery();
 
-                    // CREATE MODEL OBJECT
-                    InvoiceItem item = new InvoiceItem(pid, qty, price);
+                        if (rs.next()) {
 
-                    // ADD TO INVOICE OBJECT
-                    invoice.addItem(item);
+                            double price = rs.getDouble("price");
 
-                    // ADD TO TABLE (UI)
-                    model.addRow(new Object[]{
-                            item.getProductId(),
-                            item.getQuantity(),
-                            item.getPrice(),
-                            item.getTotal()
-                    });
+                            InvoiceItem item = new InvoiceItem(pid, qty, price);
+                            invoice.addItem(item);
 
-                    // UPDATE TOTAL
-                    grandTotal += item.getTotal();
-                    totalLabel.setText("Total: " + grandTotal);
+                            // UPDATE UI SAFELY
+                            SwingUtilities.invokeLater(() -> {
 
-                    // CLEAR INPUTS
-                    productIdField.setText("");
-                    quantityField.setText("");
+                                model.addRow(new Object[]{
+                                        item.getProductId(),
+                                        item.getQuantity(),
+                                        item.getPrice(),
+                                        item.getTotal()
+                                });
 
-                } else {
-                    JOptionPane.showMessageDialog(this, "Product not found!");
+                                grandTotal += item.getTotal();
+                                totalLabel.setText("Total: " + grandTotal);
+
+                                productIdField.setText("");
+                                quantityField.setText("");
+                            });
+
+                        } else {
+                            SwingUtilities.invokeLater(() ->
+                                    JOptionPane.showMessageDialog(null, "Product not found!")
+                            );
+                        }
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        SwingUtilities.invokeLater(() ->
+                                JOptionPane.showMessageDialog(null, "Error processing request!")
+                        );
+                    }
+
+                    return null;
                 }
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error adding item!");
-            }
+                @Override
+                protected void done() {
+                    System.out.println("Thread task completed");
+                }
+
+            }.execute();
         });
     }
 }
