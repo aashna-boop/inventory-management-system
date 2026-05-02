@@ -1,5 +1,6 @@
 package com.inventory.ui;
 import com.inventory.ui.InvoicePanel;
+import com.inventory.report.SalesReportPanel;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -23,7 +24,7 @@ public class MainDashboard extends JFrame {
         tabs.add("Stock", new JPanel());
         tabs.add("Suppliers", new JPanel());
         tabs.add("Invoice", new InvoicePanel());
-        tabs.add("Reports", new JPanel());
+        tabs.add("Reports", new SalesReportPanel());
 
         add(tabs);
 

@@ -91,7 +91,7 @@ public class ProductPanel extends JPanel {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error adding product!");
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         });
     }

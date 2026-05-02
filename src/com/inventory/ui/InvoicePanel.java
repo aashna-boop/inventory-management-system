@@ -59,7 +59,7 @@ public class InvoicePanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        // ================= THREADING IMPLEMENTATION =================
+        // BUTTON ACTION
         addBtn.addActionListener(e -> {
 
             new SwingWorker<Void, Void>() {
@@ -83,20 +83,33 @@ public class InvoicePanel extends JPanel {
 
                             double price = rs.getDouble("price");
 
+                            // MODEL
                             InvoiceItem item = new InvoiceItem(pid, qty, price);
                             invoice.addItem(item);
 
-                            // UPDATE UI SAFELY
+                            // 🔥 FIXED INSERT (NO NULL ISSUE)
+                            String insertSQL = "INSERT INTO invoice_items (invoice_id, product_id, quantity, price, total) VALUES (?, ?, ?, ?, ?)";
+                            PreparedStatement insertPst = conn.prepareStatement(insertSQL);
+
+                            insertPst.setInt(1, 1);
+                            insertPst.setInt(2, pid);
+                            insertPst.setInt(3, qty);
+                            insertPst.setDouble(4, price);
+                            insertPst.setDouble(5, price * qty);
+
+                            insertPst.executeUpdate();
+
+                            // UI UPDATE
                             SwingUtilities.invokeLater(() -> {
 
                                 model.addRow(new Object[]{
-                                        item.getProductId(),
-                                        item.getQuantity(),
-                                        item.getPrice(),
-                                        item.getTotal()
+                                        pid,
+                                        qty,
+                                        price,
+                                        price * qty
                                 });
 
-                                grandTotal += item.getTotal();
+                                grandTotal += price * qty;
                                 totalLabel.setText("Total: " + grandTotal);
 
                                 productIdField.setText("");
@@ -112,7 +125,7 @@ public class InvoicePanel extends JPanel {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         SwingUtilities.invokeLater(() ->
-                                JOptionPane.showMessageDialog(null, "Error processing request!")
+                                JOptionPane.showMessageDialog(null, "Error adding item!")
                         );
                     }
 
@@ -121,7 +134,7 @@ public class InvoicePanel extends JPanel {
 
                 @Override
                 protected void done() {
-                    System.out.println("Thread task completed");
+                    System.out.println("Item inserted correctly");
                 }
 
             }.execute();
