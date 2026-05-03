@@ -27,7 +27,13 @@ public class Supplier extends BaseEntity implements Displayable {
     public String getContact() { return contact; }
     public String getAddress() { return address; }
 
-    // ===== OVERRIDE METHOD (INTERFACE) =====
+    // ===== OVERRIDE ABSTRACT METHOD =====
+    @Override
+    public String getDetails() {
+        return name + " - " + address;
+    }
+
+    // ===== OVERRIDE INTERFACE METHOD =====
     @Override
     public String getDisplayInfo() {
         return name + " (" + contact + ")";
