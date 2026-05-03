@@ -2,6 +2,7 @@ package com.inventory.ui;
 import com.inventory.ui.InvoicePanel;
 import com.inventory.report.SalesReportPanel;
 import com.inventory.ui.StockPanel;
+import com.inventory.ui.SupplierPanel;
 
 
 
@@ -26,7 +27,7 @@ public class MainDashboard extends JFrame {
         // Placeholder tabs
         tabs.add("Stock History", new StockHistoryPanel());
         tabs.add("Stock", new StockPanel());
-        tabs.add("Suppliers", new JPanel());
+        tabs.add("Suppliers", new SupplierPanel());
         tabs.add("Invoice", new InvoicePanel());
         tabs.add("Reports", new SalesReportPanel());
 
