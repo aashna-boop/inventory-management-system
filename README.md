@@ -1,147 +1,186 @@
-# 📦 Inventory Management System (Java OOP + JDBC)
+# 📦 Inventory Management System (OOP Capstone Project)
 
-A desktop-based Inventory Management System built using **Java (OOP concepts)**, **Swing (GUI)**, and **JDBC (MySQL)**.
-This project is designed as a collaborative academic project with modular development.
+## 📌 Overview
 
----
+This project is a **desktop-based Inventory Management System** built using **Java (Swing GUI)** and **MySQL (JDBC connectivity)**. It enables businesses to efficiently manage products, track stock levels, handle suppliers, generate invoices, and analyze sales reports — all within a structured and user-friendly interface.
 
-## 🚀 Features
-
-* Manage Products, Stock, Suppliers, and Invoices
-* Simple and interactive **Swing-based UI**
-* Database connectivity using **JDBC (MySQL)**
-* Modular structure for team development
-* Basic reporting functionality
+The system is designed with strong emphasis on **Object-Oriented Programming (OOP)** principles such as **encapsulation, inheritance, abstraction, polymorphism (overriding & overloading)**, and modular design for team-based development.
 
 ---
 
-## 🧠 Tech Stack
+## 👥 Team Members
 
-* Java (OOP)
-* Java Swing (GUI)
-* MySQL (Database)
-* JDBC (Database Connectivity)
-* Git & GitHub (Version Control)
-
----
-
-## 📁 Project Structure
-
-```
-src/
- └── com/inventory/
-      ├── db/        # Database connection
-      ├── model/     # OOP classes (Product, Supplier, etc.)
-      ├── ui/        # Swing UI panels
-      └── MainApp.java
-```
+* Aashna Suman
+* Aaditya Rawat
+* Aarush Agrawal
+* Madhav Tiwari
+* Ikshwaaku
+* Isha Tiwari
 
 ---
 
-## 👥 Team Responsibilities
+## 🧠 OOP Concepts Implemented
 
-### 🔹 Member 1 — Core
-
-* DBConnection (JDBC setup)
-* MainDashboard (main UI with tabs)
-* Application entry point
-
----
-
-### 🔹 Member 2 — Product Module
-
-* Product.java (model)
-* ProductPanel.java (UI)
-* Features: Add & view products
+* Encapsulation (private fields + getters/setters)
+* Inheritance (shared base classes)
+* Polymorphism (method overriding & overloading)
+* Abstraction (abstract classes & interfaces)
+* Constructors
+* Access Modifiers
+* Modular architecture for scalability
 
 ---
 
-### 🔹 Member 3 — Stock Module
+## 🏗️ Project Architecture
 
-* StockItem.java (model)
-* StockPanel.java (UI)
-* Features: Manage stock levels
+### 🔹 Core Module (Member 1 — Backbone)
 
----
+* `DBConnection.java` → Singleton JDBC connection to MySQL
+* `MainApp.java` → Application entry point
+* `MainDashboard.java` → Tabbed UI integrating all modules
+* `schema.sql` → Database schema (6 tables)
+* UML & Database Design
 
-### 🔹 Member 4 — Supplier Module
-
-* Supplier.java (model)
-* SupplierPanel.java (UI)
-* Features: Add & manage suppliers
+✔ Must be completed first for integration
 
 ---
 
-### 🔹 Member 5 — Invoice Module
+### 🔹 Product Module (Member 2)
 
-* Invoice.java, InvoiceItem.java (models)
-* InvoicePanel.java (UI)
-* Features: Create invoices using products
+* `Product.java`, `Category.java` → Data models
+* `ProductPanel.java` → UI for product management
+* Features:
 
-> Depends on Product module
+  * Add product
+  * View product list
+  * Database integration
+* Uses inheritance, `super`, and code reuse
 
 ---
 
-### 🔹 Member 6 — Reports & Testing
+### 🔹 Stock Module (Member 3)
 
-* SalesReportPanel.java
-* Basic reports (e.g., total sales)
-* Optional JUnit testing
+* `StockItem.java` → Stock model
+* `StockPanel.java` → Update/view stock
+* `StockHistoryPanel.java` → Track stock changes
+* Features:
 
-> Depends on all modules
+  * Low-stock alerts
+* Uses method overloading & overriding
+
+---
+
+### 🔹 Supplier Module (Member 4)
+
+* `Supplier.java` → Supplier model
+* `SupplierPanel.java` → UI for supplier management
+* `SupplierFormDialog.java` → Add/edit popup form
+* Uses abstract classes & interfaces
+
+---
+
+### 🔹 Invoice Module (Member 5)
+
+* `Invoice.java`, `InvoiceItem.java` → Billing models
+* `InvoicePanel.java` → Billing UI
+* Features:
+
+  * Add items to cart
+  * Dynamic total calculation
+  * MySQL integration
+* Depends on Product module
+
+---
+
+### 🔹 Reports & Testing Module (Member 6)
+
+* `ReportService.java` → Generates:
+
+  * Sales reports
+  * Low stock alerts
+  * Top products
+* `SalesReportPanel.java` → UI for reports
+* `AppTest.java` → JUnit testing
+* Uses Collections & Generics
+
+---
+
+## 🗄️ Database Schema
+
+Database: `inventory_db`
+
+Tables:
+
+* `products`
+* `stock`
+* `suppliers`
+* `invoice`
+* `invoice_items`
+* `users` (optional for future authentication)
 
 ---
 
 ## ⚙️ Setup Instructions
 
-### 1. Clone the repository
+### 1️⃣ Database Setup
+
+```sql
+CREATE DATABASE inventory_db;
+USE inventory_db;
+```
+
+Run the provided `schema.sql` to create all tables.
+
+---
+
+### 2️⃣ MySQL Configuration
+
+* Open MySQL Workbench
+* Connect to `MySQL80`
+* Password: `root123`
+
+---
+
+### 3️⃣ Compile & Run Application
+
+#### Compile:
 
 ```bash
-git clone https://github.com/aashna-boop/inventory-management-system.git
-cd inventory-management-system
+javac -source 8 -target 8 -cp ".;lib/*" -d out src/com/inventory/MainApp.java src/com/inventory/ui/MainDashboard.java src/com/inventory/db/DBConnection.java
+```
+
+#### Run:
+
+```bash
+java -cp ".;out;lib/*" com.inventory.MainApp
 ```
 
 ---
 
-### 2. Set up MySQL Database
+### 🧪 Compile Test Module
 
-* Create a database (e.g., `inventory_db`)
-* Run the `schema.sql` file to create tables
-
----
-
-### 3. Configure Database Connection
-
-Update credentials in `DBConnection.java`:
-
-```java
-DriverManager.getConnection(
-    "jdbc:mysql://localhost:3306/inventory_db",
-    "your_username",
-    "your_password"
-);
+```bash
+javac -cp ".;lib/*;out" -d out src/com/inventory/test/AppTest.java
 ```
-
----
-
-### 4. Run the Application
-
-* Open project in VS Code / IntelliJ
-* Run `MainApp.java`
 
 ---
 
 ## 🔄 Git Workflow
 
-Before starting work:
+### Initial Setup
 
 ```bash
-git pull
+git clone https://github.com/aashna-boop/inventory-management-system.git
+cd inventory-management-system
+git pull origin main
+git checkout -b <branch-name>
+git push -u origin <branch-name>
 ```
 
-After making changes:
+### Daily Workflow
 
 ```bash
+git pull origin main
 git add .
 git commit -m "your message"
 git push
@@ -149,36 +188,19 @@ git push
 
 ---
 
-## ⚠️ Important Guidelines
+## 💡 Key Highlights
 
-* Follow the package structure strictly
-* Do not modify others' files without discussion
-* Keep implementation simple (focus on OOP + functionality)
-* Test your module before pushing
-
----
-
-## 🎯 Project Goal
-
-This project focuses on:
-
-* Applying **Object-Oriented Programming concepts**
-* Building a functional **GUI application**
-* Integrating **JDBC with MySQL**
-* Practicing **team-based development using Git**
+* Clean modular structure for team collaboration
+* Strong application of OOP principles
+* Real-world business use case
+* Scalable and extendable architecture
 
 ---
 
-## 🤝 Contribution
+## 📬 Contribution Note
 
-Each team member works on their assigned module and integrates it into the main project.
-
----
-
-## 📌 Note
-
-This is an academic project aimed at learning software design, not building a production-level system.
+Each member works on their own module branch and integrates via `MainDashboard`. Ensure your module is tested independently before merging.
 
 ---
 
-✨ Happy coding!
+✨ *Built as an academic capstone to demonstrate real-world application of Java OOP, GUI design, and database integration.*
